@@ -1,0 +1,16 @@
+{
+  "name": "JDDuoBao",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "carlo": "^0.9.46",
+    "puppeteer-core": "^1.19.0"
+  }
+}
