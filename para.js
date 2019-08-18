@@ -1,3 +1,6 @@
+/**
+ * 一些接口的参数
+* */
 const Para = {
     get_item_list_para: function () {
         return {
@@ -22,9 +25,6 @@ const Para = {
         return {
             auctionId: item_id,
             price: price,
-            entryid:"",
-            trackId: "b674692e5ae20c2f0effc595cfa26f1e",
-            eid: "2QVQABUUJ7KEIIY7DNE73QQJQ52M2HNRAORX66H2POFG6B5SNPHREKBIBE4SAMVGPKA4XZ7DGWA4NYMGDG2JIHD5RQ"
         }
     },
 
