@@ -7,17 +7,17 @@ const API = require("./api");
 const Para = require("./para");
 const axios = require("axios");
 
-const Item_ID = 115976713;
-const MaxPrice = 5;
+const Item_ID = 115979063;
+const MaxPrice = 500;
 const Item_URL = "http://paipai.jd.com/auction-detail/" + Item_ID;
 let IsFirstOfferPrice = true;
 let page;
 let isStar = false;
 let entryid, trackId, eid, token, cookie;
 
-cookie = "shshshfpa=7cfb5f3d-cc02-4100-6c77-6bfa255b99fd-1556551047; shshshfpb=xutDOhf7WKy%20vG%2FriMj8nUw%3D%3D; user-key=b35c73d2-590b-49f7-8bb3-4159bb42c4c6; cn=5; areaId=22; ipLoc-djd=22-1930-49322-0; __jdv=122270672|baidu|-|organic|not set|1565363664173; _c_id=1stoc5q735wg7zfhrj515657854491300jfy; pinId=H5yEz6vzT_61ffsfn98I-w; _tp=SKRJ1RA7jTBAA8rl%2B%2B2PRw%3D%3D; _pst=moon8sky; _gcl_au=1.1.227075814.1566009655; __jdu=2062738562; shshshfp=3f7ff5fcaf8fef7fa12483d31689d199; pin=moon8sky; unick=moon8sky; __tak=75cdc9a4de3ba9967376bae3bc790043119f97504cbf0b6b4509a715f0251865b46173f9352d2fb77c7092404ea55679dd1fc514d8ccd84f1fc865d105513fb77e6656f20a029bcf6bb0392f000c0d20; wlfstk_smdl=ogd4y681kp626s0b2mdy4tt8nl74oitc; TrackID=1nSgJb2KgXsMgnYpnAtS5GmJoBUveY6QcOu4ykAE4E2ftPv0rXClmEn1RQnswRbwmav36eTToXlAah0p5Qm4mEEGPxTgoKgYuRJmKu1cA_U8; thor=BBD855E95908CACC088BDFDDE4C0AAC9A93BC3C340B23A84A66367D245A81D806AB2AF0803AE522DE3A1B037C517C110F591FD2DDD157EFB54413D42C4A78F4F745F92D7D955F516EFDD17FE98FCF2B0123BE9E0D59A1AC8A8A3131D2E65C8317CFF812BB2495DC735E008EF3E2A4B5C814B7FFD624EB16F178C42933166ECF847E3BBBCD240CCD5CFF1290858442936; ceshi3.com=201; logining=1; __jda=148612534.2062738562.1556547281.1566137550.1566217723.35; __jdc=148612534; 3AB9D23F7A4B3C9B=VKVDC3HJMGEKVPMRW53PKMGTIALHSLZVOWT3LISOKDL5LMWMPQVGNQ2SMDMVKKGHMZ2F6ZOOC7WCM5X455LFFNO2XM; __jdb=148612534.6.2062738562|35.1566217723";
+cookie = "shshshfpa=7cfb5f3d-cc02-4100-6c77-6bfa255b99fd-1556551047; shshshfpb=xutDOhf7WKy%20vG%2FriMj8nUw%3D%3D; user-key=b35c73d2-590b-49f7-8bb3-4159bb42c4c6; cn=5; __jdv=122270672|baidu|-|organic|not set|1565363664173; _c_id=1stoc5q735wg7zfhrj515657854491300jfy; pinId=H5yEz6vzT_61ffsfn98I-w; _tp=SKRJ1RA7jTBAA8rl%2B%2B2PRw%3D%3D; _pst=moon8sky; _gcl_au=1.1.227075814.1566009655; __jdu=2062738562; pin=moon8sky; unick=moon8sky; __tak=54ca990c80c7879cb284633bd4e7ec2ce8029d48b7ac5b59315fa25c182826402bee42aae882aaf5fe1075b6dc724bad1ada77ea1ef63955c88c8021d4a11a82a6f1b6bcf7038545e82a1b75f7949936; shshshfp=e08c45215f8343711c7cc29513940e6b; areaId=22; ipLoc-djd=22-1930-49322-0; wlfstk_smdl=l7bmzxb0z16wtb98f8shrs08jmoysage; TrackID=1_MEY3UUelcno7E22cg30lE9VRWGgtcZwwp_V-Kez0FbnVUoAYhQoSkvrJ_LTMllI4RBDP4F4HOUc9VYGOvHGNjHf-00b9KQJu9ELBnLat4g; ceshi3.com=201; 3AB9D23F7A4B3C9B=VKVDC3HJMGEKVPMRW53PKMGTIALHSLZVOWT3LISOKDL5LMWMPQVGNQ2SMDMVKKGHMZ2F6ZOOC7WCM5X455LFFNO2XM; shshshsID=762ee2be12abbda5f9979abc12ba0a99_4_1566226948961; thor=BBD855E95908CACC088BDFDDE4C0AAC91F7BC8D8BFD92FA07F2AAA5ACC699EEDAAD3F16861101F60D312EE6083EB6CEE91482998C0F425061338E2F3D7E021068D3E7EBDB54248B7B6C2F778B8D7D8B1E2E7409A1937913267AC11706C855CFFAEFB3B02BF6FAB3D4CADBD0D76BAEFDBE6C8B6357AD79FD15A83DD6E5C450FD114A693E4DEAF75CB09313FAE231251DD; __jda=148612534.2062738562.1556547281.1566217723.1566226147.36; __jdc=148612534; __jdb=148612534.30.2062738562|36.1566226147";
 
- /**
+/**
  * 启动浏览器，加载页面
  * */
 (async () => {
@@ -74,17 +74,17 @@ cookie = "shshshfpa=7cfb5f3d-cc02-4100-6c77-6bfa255b99fd-1556551047; shshshfpb=x
                 eid     = post_data_obj.eid;
                 token   = post_data_obj.token;
                 price   = post_data_obj.price;
-
             }
 
             // 随意点击页面，让提示信息框消失
-            // setTimeout(function () {
-            //     page.mouse.click(200, 200);
-            // },1000);
-            interceptedRequest.abort();
-            //interceptedRequest.continue();
-            buyByAPI(price + 1);
-            //IsFirstOfferPrice ? interceptedRequest.abort() : interceptedRequest.continue();
+            setTimeout(function () {
+                page.mouse.click(200, 200);
+            },1000);
+
+            buyByAPI(5);
+
+            IsFirstOfferPrice ? interceptedRequest.abort() : interceptedRequest.continue();
+
             IsFirstOfferPrice = false;
         }else {
             interceptedRequest.continue();
@@ -155,27 +155,28 @@ function handlePriceAndTime(price, time){
         buyByPage(1);
     }
 
-    // let next_refresh_time = 2000;
-    // if (price > MaxPrice){
-    //     console.log("超过最高价格，抢购结束");
-    //     return;
-    // }
-    //
-    // if (time < 0){
-    //     console.log("抢购时间结束");
-    //     return;
-    // }
-    //
-    //
-    // if (time < 3000) next_refresh_time = 100;
-    //
-    // if(time < 1000){
-    //     buyByAPI(price+2);
-    // }
-    //
-    // setTimeout(function () {
-    //     getItemPriceAndTime(handlePriceAndTime);
-    // }, next_refresh_time)
+    let next_refresh_time = 2000;
+    if (price > MaxPrice){
+        console.log("超过最高价格，抢购结束");
+        return;
+    }
+
+    if (time < 0){
+        console.log("抢购时间结束");
+        return;
+    }
+
+
+    if (time < 3000) next_refresh_time = 100;
+
+    if(time < 1000){
+        console.log("buy");
+        //buyByAPI(price+2);
+    }
+
+    setTimeout(function () {
+        getItemPriceAndTime(handlePriceAndTime);
+    }, next_refresh_time)
 }
 
 /**
