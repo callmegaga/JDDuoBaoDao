@@ -7,7 +7,7 @@ const API = require("./api");
 const Para = require("./para");
 const axios = require("axios");
 
-const Item_ID = 115956585;
+const Item_ID = 115976713;
 const MaxPrice = 5;
 const Item_URL = "http://paipai.jd.com/auction-detail/" + Item_ID;
 let IsFirstOfferPrice = true;
@@ -15,9 +15,9 @@ let page;
 let isStar = false;
 let entryid, trackId, eid, token, cookie;
 
-cookie = "shshshfpa=7cfb5f3d-cc02-4100-6c77-6bfa255b99fd-1556551047; shshshfpb=xutDOhf7WKy%20vG%2FriMj8nUw%3D%3D; user-key=b35c73d2-590b-49f7-8bb3-4159bb42c4c6; cn=5; areaId=22; ipLoc-djd=22-1930-49322-0; __jdv=122270672|baidu|-|organic|not set|1565363664173; _c_id=1stoc5q735wg7zfhrj515657854491300jfy; pinId=H5yEz6vzT_61ffsfn98I-w; _tp=SKRJ1RA7jTBAA8rl%2B%2B2PRw%3D%3D; _gcl_au=1.1.227075814.1566009655; __jdu=2062738562; shshshfp=3f7ff5fcaf8fef7fa12483d31689d199; pin=moon8sky; __tak=8382066cb44c10bff147f7cccdb007d858b9574d38b21db03d1a477cd9c6ec55537d7c0596cc6240b166fb9ff931b8d8c20b4546e33d6a6783926dbdba735819a5f5138ffaae4c7b97a8225c27d43323; wlfstk_smdl=vqbzyoge3ikf07a5yqaiq61mpzzr4jlz; TrackID=10QhUcVrHdZVrwlsIK9vvVq428dXfKM0Ky51a7iv6ZWJw2i0hbGl1AKEgkLZHkjWVMin__uEAWHSimS6wXtJdnbLtVup_E_gqJQxynkMDnsU; ceshi3.com=201; logining=1; __jda=148612534.2062738562.1556547281.1566098552.1566134252.33; __jdc=148612534; 3AB9D23F7A4B3C9B=VKVDC3HJMGEKVPMRW53PKMGTIALHSLZVOWT3LISOKDL5LMWMPQVGNQ2SMDMVKKGHMZ2F6ZOOC7WCM5X455LFFNO2XM; __jdb=148612534.6.2062738562|33.1566134252";
+cookie = "shshshfpa=7cfb5f3d-cc02-4100-6c77-6bfa255b99fd-1556551047; shshshfpb=xutDOhf7WKy%20vG%2FriMj8nUw%3D%3D; user-key=b35c73d2-590b-49f7-8bb3-4159bb42c4c6; cn=5; areaId=22; ipLoc-djd=22-1930-49322-0; __jdv=122270672|baidu|-|organic|not set|1565363664173; _c_id=1stoc5q735wg7zfhrj515657854491300jfy; pinId=H5yEz6vzT_61ffsfn98I-w; _tp=SKRJ1RA7jTBAA8rl%2B%2B2PRw%3D%3D; _pst=moon8sky; _gcl_au=1.1.227075814.1566009655; __jdu=2062738562; shshshfp=3f7ff5fcaf8fef7fa12483d31689d199; pin=moon8sky; unick=moon8sky; __tak=75cdc9a4de3ba9967376bae3bc790043119f97504cbf0b6b4509a715f0251865b46173f9352d2fb77c7092404ea55679dd1fc514d8ccd84f1fc865d105513fb77e6656f20a029bcf6bb0392f000c0d20; wlfstk_smdl=ogd4y681kp626s0b2mdy4tt8nl74oitc; TrackID=1nSgJb2KgXsMgnYpnAtS5GmJoBUveY6QcOu4ykAE4E2ftPv0rXClmEn1RQnswRbwmav36eTToXlAah0p5Qm4mEEGPxTgoKgYuRJmKu1cA_U8; thor=BBD855E95908CACC088BDFDDE4C0AAC9A93BC3C340B23A84A66367D245A81D806AB2AF0803AE522DE3A1B037C517C110F591FD2DDD157EFB54413D42C4A78F4F745F92D7D955F516EFDD17FE98FCF2B0123BE9E0D59A1AC8A8A3131D2E65C8317CFF812BB2495DC735E008EF3E2A4B5C814B7FFD624EB16F178C42933166ECF847E3BBBCD240CCD5CFF1290858442936; ceshi3.com=201; logining=1; __jda=148612534.2062738562.1556547281.1566137550.1566217723.35; __jdc=148612534; 3AB9D23F7A4B3C9B=VKVDC3HJMGEKVPMRW53PKMGTIALHSLZVOWT3LISOKDL5LMWMPQVGNQ2SMDMVKKGHMZ2F6ZOOC7WCM5X455LFFNO2XM; __jdb=148612534.6.2062738562|35.1566217723";
 
-/**
+ /**
  * 启动浏览器，加载页面
  * */
 (async () => {
@@ -56,6 +56,7 @@ cookie = "shshshfpa=7cfb5f3d-cc02-4100-6c77-6bfa255b99fd-1556551047; shshshfpb=x
         if (page.url() === Item_URL) {
             if (isStar === false){
                 getItemPriceAndTime(handlePriceAndTime);
+                //cookie = await page.evaluate(() => document.cookie);
                 isStar = true;
             }
         }
@@ -82,7 +83,7 @@ cookie = "shshshfpa=7cfb5f3d-cc02-4100-6c77-6bfa255b99fd-1556551047; shshshfpb=x
             // },1000);
             interceptedRequest.abort();
             //interceptedRequest.continue();
-            buyByAPI(price);
+            buyByAPI(price + 1);
             //IsFirstOfferPrice ? interceptedRequest.abort() : interceptedRequest.continue();
             IsFirstOfferPrice = false;
         }else {
@@ -196,6 +197,7 @@ async function buyByPage(price){
  * */
 async function buyByAPI(price){
     let para = Para.get_offer_price_para(Item_ID, price);
+
     if (entryid === undefined || trackId === undefined || eid === undefined || cookie === undefined){
         console.log("没有正确获取到entryid，trackId，eid，无法执行购买");
     }else {
@@ -226,7 +228,6 @@ async function isPageLogin(page) {
 function requestOfferPrice(para) {
     let postData = querystring.stringify(para);
     postData += "&";
-    console.log(cookie);
 
     const options = {
         method: "POST",
@@ -235,6 +236,8 @@ function requestOfferPrice(para) {
             "Content-Length": Buffer.byteLength(postData),
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36",
             "Cookie":cookie,
+            "Referer": Item_URL,
+            "Sec-Fetch-Mode": "cors"
         }
     };
 
