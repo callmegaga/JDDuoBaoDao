@@ -15,10 +15,7 @@ const Para = {
     },
 
     get_item_result_para: function (item_id) {
-        return {
-            auctionId: item_id,
-            callback: "__jp1"
-        }
+        return `?auctionId=${item_id}&callback=__jp6`;
     },
 
     get_offer_price_para: function (item_id, price) {

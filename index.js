@@ -2,20 +2,17 @@ const puppeteer = require('puppeteer-core');
 const findChrome = require('./node_modules/carlo/lib/find_chrome');
 const querystring = require("querystring");
 const http = require("http");
-const https = require("https");
 const API = require("./api");
 const Para = require("./para");
-const axios = require("axios");
 
-const Item_ID = 115979063;
-const MaxPrice = 500;
+const Item_ID = 116110477;
+const MaxPrice = 20;
 const Item_URL = "http://paipai.jd.com/auction-detail/" + Item_ID;
 let IsFirstOfferPrice = true;
 let page;
 let isStar = false;
+let EndTime;
 let entryid, trackId, eid, token, cookie;
-
-cookie = "shshshfpa=7cfb5f3d-cc02-4100-6c77-6bfa255b99fd-1556551047; shshshfpb=xutDOhf7WKy%20vG%2FriMj8nUw%3D%3D; user-key=b35c73d2-590b-49f7-8bb3-4159bb42c4c6; cn=5; __jdv=122270672|baidu|-|organic|not set|1565363664173; _c_id=1stoc5q735wg7zfhrj515657854491300jfy; pinId=H5yEz6vzT_61ffsfn98I-w; _tp=SKRJ1RA7jTBAA8rl%2B%2B2PRw%3D%3D; _pst=moon8sky; _gcl_au=1.1.227075814.1566009655; __jdu=2062738562; pin=moon8sky; unick=moon8sky; __tak=54ca990c80c7879cb284633bd4e7ec2ce8029d48b7ac5b59315fa25c182826402bee42aae882aaf5fe1075b6dc724bad1ada77ea1ef63955c88c8021d4a11a82a6f1b6bcf7038545e82a1b75f7949936; shshshfp=e08c45215f8343711c7cc29513940e6b; areaId=22; ipLoc-djd=22-1930-49322-0; wlfstk_smdl=l7bmzxb0z16wtb98f8shrs08jmoysage; TrackID=1_MEY3UUelcno7E22cg30lE9VRWGgtcZwwp_V-Kez0FbnVUoAYhQoSkvrJ_LTMllI4RBDP4F4HOUc9VYGOvHGNjHf-00b9KQJu9ELBnLat4g; ceshi3.com=201; 3AB9D23F7A4B3C9B=VKVDC3HJMGEKVPMRW53PKMGTIALHSLZVOWT3LISOKDL5LMWMPQVGNQ2SMDMVKKGHMZ2F6ZOOC7WCM5X455LFFNO2XM; shshshsID=762ee2be12abbda5f9979abc12ba0a99_4_1566226948961; thor=BBD855E95908CACC088BDFDDE4C0AAC91F7BC8D8BFD92FA07F2AAA5ACC699EEDAAD3F16861101F60D312EE6083EB6CEE91482998C0F425061338E2F3D7E021068D3E7EBDB54248B7B6C2F778B8D7D8B1E2E7409A1937913267AC11706C855CFFAEFB3B02BF6FAB3D4CADBD0D76BAEFDBE6C8B6357AD79FD15A83DD6E5C450FD114A693E4DEAF75CB09313FAE231251DD; __jda=148612534.2062738562.1556547281.1566217723.1566226147.36; __jdc=148612534; __jdb=148612534.30.2062738562|36.1566226147";
 
 /**
  * 启动浏览器，加载页面
@@ -40,7 +37,7 @@ cookie = "shshshfpa=7cfb5f3d-cc02-4100-6c77-6bfa255b99fd-1556551047; shshshfpb=x
     // 页面加载完成需要判断是否登录
     page.on("load", async function () {
 
-        if (page.url() === "http://paipai.jd.com/auction-list/"){
+        if (page.url() === API.list_page){
             if (!await isPageLogin(page)){
                 let login_btn = await page.$(".pp-shortcut__btn-login");
 
@@ -55,25 +52,33 @@ cookie = "shshshfpa=7cfb5f3d-cc02-4100-6c77-6bfa255b99fd-1556551047; shshshfpb=x
 
         if (page.url() === Item_URL) {
             if (isStar === false){
-                getItemPriceAndTime(handlePriceAndTime);
-                //cookie = await page.evaluate(() => document.cookie);
                 isStar = true;
+                // 需要使用两个页面的cookie
+                let jd_cookie = await page.cookies("https://passport.jd.com");
+                let page_cookie = await page.cookies();
+                cookie = mergeCookie(jd_cookie, page_cookie);
+                getItemPriceAndTime(function (historyRecord, endTime) {
+                    EndTime = endTime;
+                    for (let i in historyRecord){
+                        console.log("历史价格：" + historyRecord[i].offerPrice);
+                    }
+                    getBatchInfo()
+                });
             }
         }
     });
 
-    // 对请求进行拦截，如果是出价的请求，则拦截第一次，获取到entryid, trackId, eid
-    page.on('request', function (interceptedRequest ) {
-        if(interceptedRequest.url() === API.offer_price){
-            let post_data = interceptedRequest.postData();
-            let price;
+    // 对请求进行处理，如果是出价的请求，则拦截第一次，获取到entryid, trackId, eid
+    page.on('request', async function (request) {
+        if(request.url() === API.offer_price){
+            let post_data = request.postData();
+
             if (post_data){
                 let post_data_obj = querystring.parse(post_data);
                 entryid = post_data_obj.entryid;
                 trackId = post_data_obj.trackId;
                 eid     = post_data_obj.eid;
                 token   = post_data_obj.token;
-                price   = post_data_obj.price;
             }
 
             // 随意点击页面，让提示信息框消失
@@ -81,18 +86,17 @@ cookie = "shshshfpa=7cfb5f3d-cc02-4100-6c77-6bfa255b99fd-1556551047; shshshfpb=x
                 page.mouse.click(200, 200);
             },1000);
 
-            buyByAPI(5);
+            buyByAPI(8);
 
-            IsFirstOfferPrice ? interceptedRequest.abort() : interceptedRequest.continue();
+            IsFirstOfferPrice ? request.abort() : request.continue();
 
             IsFirstOfferPrice = false;
         }else {
-            interceptedRequest.continue();
+            request.continue();
         }
     });
 
-    await page.goto('http://paipai.jd.com/auction-list/');
-
+    await page.goto(API.list_page);
 })();
 
 /**
@@ -123,12 +127,14 @@ function getItemPriceAndTime(callback){
         res.on('end', () => {
             let data = JSON.parse(rawData);
             let currentTime = data.data.currentTime;
+            let historyRecord = data.data.historyRecord;
             let auctionInfo = data.data.auctionInfo;
-
+            
             let currentPrice = auctionInfo.currentPrice;
             currentPrice = currentPrice === null ? 1 : currentPrice;
             let endTime = auctionInfo.endTime;
-            callback(currentPrice, endTime - currentTime);
+
+            callback(historyRecord, endTime);
         });
     });
 
@@ -138,6 +144,30 @@ function getItemPriceAndTime(callback){
 
     req.write(postData);
     req.end();
+}
+
+/**
+ * 获得竞拍实时信息
+ * */
+function getBatchInfo() {
+    let url = API.item_result + Para.get_item_result_para(Item_ID);
+    http.get(url, function (res) {
+        let rawData = "";
+
+        res.setEncoding('utf8');
+
+        res.on('data', (chunk) => {
+            rawData += chunk;
+        });
+
+        res.on('end', () => {
+            let data = eval(rawData);
+            let current_time = data.list[0];
+            let current_price = data.data[Item_ID].currentPrice;
+
+            handlePriceAndTime(current_price, EndTime - current_time);
+        });
+    })
 }
 
 
@@ -156,7 +186,7 @@ function handlePriceAndTime(price, time){
     }
 
     let next_refresh_time = 2000;
-    if (price > MaxPrice){
+    if (price + 1 > MaxPrice){
         console.log("超过最高价格，抢购结束");
         return;
     }
@@ -170,12 +200,29 @@ function handlePriceAndTime(price, time){
     if (time < 3000) next_refresh_time = 100;
 
     if(time < 1000){
-        console.log("buy");
-        //buyByAPI(price+2);
+        console.log(`出价${price + 1}`);
+        buyByAPI(price + 1);
+    }
+
+
+    if (time < 300){
+        console.log("开始密集抢购");
+        for(let i = price; i < MaxPrice; i++){
+            (function () {
+                let now_price = i;
+                setTimeout(function (){
+
+                    console.log(`出价${now_price}`);
+                    buyByAPI(now_price)
+
+                }, 50);
+            })()
+        }
+        return;
     }
 
     setTimeout(function () {
-        getItemPriceAndTime(handlePriceAndTime);
+        getBatchInfo(handlePriceAndTime);
     }, next_refresh_time)
 }
 
@@ -264,22 +311,30 @@ function requestOfferPrice(para) {
     req.end();
 }
 
-let instance = axios.create({
-    headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-    },
-    withCredentials: !0
-});
+/**
+ * 处理cookie，将两个页面的cookie合并到一起
+* */
+function mergeCookie(cookie_one, cookie_two) {
+    let cookie = {};
+    let string = "";
+    for (let i in cookie_two){
+        cookie[cookie_two[i].name] = cookie_two[i].value;
+    }
 
-function requestOfferPriceByAxios(para) {
-    instance.post(API.offer_price, para, {
-        transformRequest: [function(t) {
-            let e = "";
-            for (let a in t)
-                e += encodeURIComponent(a) + "=" + encodeURIComponent(t[a]) + "&";
-            return e
-        }]
-    }).then(function (data) {
-        console.log(data)
-    })
+    for (let i in cookie_one){
+        cookie[cookie_one[i].name] = cookie_one[i].value;
+    }
+
+    for (let i in cookie){
+        string += `${i}=${cookie[i]};`
+    }
+
+    return string;
+}
+
+/**
+ * 处理实时出价信息
+* */
+function __jp6(value) {
+    return value;
 }
