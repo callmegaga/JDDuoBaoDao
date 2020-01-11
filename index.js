@@ -6,9 +6,15 @@ const API = require("./api");
 const Para = require("./para");
 
 // 商品的ID
-const Item_ID = 200310052;
+const Item_ID = 200312113;
 // 最高能接受的价格
-const MaxPrice = 500;
+const MaxPrice = 900;
+// 初始刷新频率
+let NextRefreshTime = 2000;
+// 开始爆发抢购的时间
+let BoomToOfferPriceTime = 500;
+// 从发出请求，到请求成功的时间
+let RequestDelay = 250;
 
 const Item_URL = API.item_url + Item_ID;
 let IsFirstOfferPrice = true;
@@ -18,8 +24,7 @@ let NowPrice;
 let EndTime;
 let CurrentTime;
 let entryid, trackId, eid, token, cookie;
-let NextRefreshTime = 2000;
-let BoomToOfferPriceTime = 500;
+
 /**
  * 启动浏览器，加载页面
  * */
@@ -55,39 +60,36 @@ let BoomToOfferPriceTime = 500;
 
             // 查询当前的价格和剩余时间
             getBatchInfo(async function () {
-                if (NowPrice < MaxPrice && CurrentTime < EndTime){
+                // 启用拦截器
+                await page.setRequestInterception(true);
 
-                    // 启用拦截器
-                    await page.setRequestInterception(true);
-
-                    // 对出价进行拦截，目的在于获取加密参数，不需要真实出价，所以需要拦截，后续的出价请求不能拦截
-                    page.on("request", async function (request) {
-                        if(request.url() === API.offer_price_url){
-                            let post_data = request.postData();
-                            if (post_data){
-                                let post_data_obj = querystring.parse(post_data);
-                                let address = post_data_obj.address;
-                                let initFailed = post_data_obj.initFailed;
-                                entryid = post_data_obj.entryid;
-                                trackId = post_data_obj.trackId;
-                                eid     = post_data_obj.eid;
-                                token   = post_data_obj.token;
-                            }
-                            if (IsFirstOfferPrice){
-                                console.log("加密参数获取成功！！")
-                            }
-                            IsFirstOfferPrice ? request.abort() : request.continue();
-                            IsFirstOfferPrice = false;
-                        }else {
-                            request.continue();
+                // 对出价进行拦截，目的在于获取加密参数，不需要真实出价，所以需要拦截，后续的出价请求不能拦截
+                page.on("request", async function (request) {
+                    if(request.url() === API.offer_price_url){
+                        let post_data = request.postData();
+                        if (post_data){
+                            let post_data_obj = querystring.parse(post_data);
+                            let address = post_data_obj.address;
+                            let initFailed = post_data_obj.initFailed;
+                            entryid = post_data_obj.entryid;
+                            trackId = post_data_obj.trackId;
+                            eid     = post_data_obj.eid;
+                            token   = post_data_obj.token;
                         }
-                    });
+                        if (IsFirstOfferPrice){
+                            console.log("加密参数获取成功！！")
+                        }
+                        IsFirstOfferPrice ? request.abort() : request.continue();
+                        IsFirstOfferPrice = false;
+                    }else {
+                        request.continue();
+                    }
+                });
 
-                    // 通过页面操作，模拟真实的用户操作，以便获取加密参数
-                    await buyByPage(1);
+                // 通过页面操作，模拟真实的用户操作，以便获取加密参数
+                await buyByPage(1);
 
-                    handlePriceAndTime();
-                }
+                handlePriceAndTime();
             });
         }
     });
@@ -119,6 +121,25 @@ function getBatchInfo(callback) {
     })
 }
 
+/**
+ * 爆发式的抢购
+ * */
+function BoomToOfferPrice() {
+    console.log("开始密集抢购");
+    let time_length = EndTime - CurrentTime - RequestDelay;
+    let price_distance = MaxPrice - NowPrice;
+    let int = time_length / price_distance;
+    if (int < 0) int = 0;
+    let now_price = NowPrice;
+
+    setInterval(function () {
+        if (now_price < MaxPrice){
+            now_price++;
+            console.log(new Date().getTime() + ":" +  `出价${now_price}`);
+            buyByAPI(now_price)
+        }
+    },int);
+}
 
 /**
  * 根据当前的出价和剩余时间做处理
@@ -158,14 +179,7 @@ function handlePriceAndTime(){
 
 
     if (time < BoomToOfferPriceTime){
-        console.log("开始密集抢购");
-        for(let i = price; i < MaxPrice; i++){
-            (function () {
-                let now_price = i;
-                console.log(new Date().getTime() + ":" +  `出价${now_price}`);
-                buyByAPI(now_price)
-            })()
-        }
+        BoomToOfferPrice();
         return;
     }
 
