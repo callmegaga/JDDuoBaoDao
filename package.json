@@ -1,17 +1,58 @@
 {
-  "name": "JDDuoBao",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "jdduobaodao",
+  "version": "0.1.0",
+  "private": true,
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "dist": "electron-builder --win --x64"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "carlo": "^0.9.46",
-    "puppeteer-core": "^1.20.0"
+    "core-js": "^3.6.4",
+    "puppeteer-core": "^2.1.1",
+    "vue": "^2.6.11"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^4.2.0",
+    "@vue/cli-plugin-eslint": "^4.2.0",
+    "@vue/cli-service": "^4.2.0",
+    "babel-eslint": "^10.0.3",
+    "babel-plugin-component": "^1.1.1",
+    "electron": "^8.0.3",
+    "electron-builder": "^22.3.6",
+    "element-ui": "^2.13.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.1.2",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
+  "build": {
+    "appId": "jdduobao.com.wangying.app",
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ]
+    }
+  }
 }

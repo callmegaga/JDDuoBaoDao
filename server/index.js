@@ -1,14 +1,14 @@
 const puppeteer = require('puppeteer-core');
-const findChrome = require('./node_modules/carlo/lib/find_chrome');
+const findChrome = require('../node_modules/carlo/lib/find_chrome.js');
 const querystring = require("querystring");
 const https = require("https");
 const API = require("./api");
 const Para = require("./para");
 
 // 商品的ID
-const Item_ID = 200312113;
+let Item_ID = 200312113;
 // 最高能接受的价格
-const MaxPrice = 900;
+let MaxPrice = 900;
 // 初始刷新频率
 let NextRefreshTime = 2000;
 // 开始爆发抢购的时间
@@ -19,7 +19,6 @@ let RequestDelay = 250;
 const Item_URL = API.item_url + Item_ID;
 let IsFirstOfferPrice = true;
 let page;
-let isStar = false;
 let NowPrice;
 let EndTime;
 let CurrentTime;
@@ -28,7 +27,17 @@ let entryid, trackId, eid, token, cookie;
 /**
  * 启动浏览器，加载页面
  * */
-(async () => {
+function goToBid(id, price, options){
+    Item_ID = id;
+    MaxPrice = price;
+    initBid();
+}
+
+
+/**
+ * 启动浏览器，加载页面
+ * */
+async function initBid() {
     let findChromePath = await findChrome({});
     let executablePath = findChromePath.executablePath;
 
@@ -93,8 +102,9 @@ let entryid, trackId, eid, token, cookie;
             });
         }
     });
-})();
+}
 
+module.exports = goToBid;
 /**
  * 获得竞拍实时信息
  * */
