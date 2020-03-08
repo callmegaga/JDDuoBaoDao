@@ -16,7 +16,7 @@ let BoomToOfferPriceTime = 500;
 // 从发出请求，到请求成功的时间
 let RequestDelay = 250;
 
-const Item_URL = API.item_url + Item_ID;
+let Item_URL;
 let IsFirstOfferPrice = true;
 let page;
 let NowPrice;
@@ -30,6 +30,7 @@ let entryid, trackId, eid, token, cookie;
 function goToBid(id, price, options){
     Item_ID = id;
     MaxPrice = price;
+    Item_URL = API.item_url + Item_ID;
     initBid();
 }
 

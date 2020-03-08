@@ -35,24 +35,7 @@
             }
         },
         mounted() {
-            let result = [];
-            let infos = [];
-            for (let i = 0; i < 40; i++) {
-                result.push({
-                    index: i,
-                    name: "Apple iPhone 8 Plus 国行全网通4G手机 银色 64GB",
-                    cell: "9",
-                    time: "2020-03-03 23:59:48",
-                    max_price: 4399,
-                    price: 2685
-                });
-                infos.push({
-                    key: i,
-                    msg: "cedsdwqfewfwefwefwefefefef"
-                })
-            }
-            this.historyData = result;
-            this.info = infos
+
         },
         methods:{
             goToBid(id, price){
