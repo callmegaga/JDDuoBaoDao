@@ -210,7 +210,13 @@ async function buyByPage(price){
     await page.keyboard.press('Backspace');
     await page.keyboard.press('Backspace');
     await page.keyboard.type(price.toString());
-    await page.mouse.click(900, 600);
+    // await page.mouse.click(900, 720);
+    try {
+		await page.click("#InitCartUrl");	
+	}
+	catch (e) {
+
+	}
 }
 
 /**
