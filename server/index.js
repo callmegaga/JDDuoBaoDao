@@ -6,7 +6,7 @@ const API = require("./api");
 const Para = require("./para");
 
 // 商品的ID
-let Item_ID = 200312113;
+let Item_ID = 231056809;
 // 最高能接受的价格
 let MaxPrice = 900;
 // 初始刷新频率
@@ -22,12 +22,12 @@ let page;
 let NowPrice;
 let EndTime;
 let CurrentTime;
-let entryid, trackId, eid, token, cookie;
+let Entryid, Eid, Cookie;
 
 /**
  * 启动浏览器，加载页面
  * */
-function goToBid(id, price, options){
+function goToBid(id, price){
     Item_ID = id;
     MaxPrice = price;
     Item_URL = API.item_url + Item_ID;
@@ -66,7 +66,7 @@ async function initBid() {
             // 需要使用两个页面的cookie
             let jd_cookie = await page.cookies(API.login_url);
             let page_cookie = await page.cookies();
-            cookie = mergeCookie(jd_cookie, page_cookie);
+            Cookie = mergeCookie(jd_cookie, page_cookie);
 
             // 查询当前的价格和剩余时间
             getBatchInfo(async function () {
@@ -79,12 +79,16 @@ async function initBid() {
                         let post_data = request.postData();
                         if (post_data){
                             let post_data_obj = querystring.parse(post_data);
-                            let address = post_data_obj.address;
-                            let initFailed = post_data_obj.initFailed;
-                            entryid = post_data_obj.entryid;
-                            trackId = post_data_obj.trackId;
-                            eid     = post_data_obj.eid;
-                            token   = post_data_obj.token;
+
+                            // 目前没有用处的参数
+                            //let address = post_data_obj.address;
+                            //let initFailed = post_data_obj.initFailed;
+
+                            // token可以通过调用页面JS函数获取
+                            // token   = post_data_obj.token;
+
+                            Entryid = post_data_obj.entryid;
+                            Eid     = post_data_obj.eid;
                         }
                         if (IsFirstOfferPrice){
                             console.log("加密参数获取成功！！")
@@ -106,6 +110,7 @@ async function initBid() {
 }
 
 module.exports = goToBid;
+
 /**
  * 获得竞拍实时信息
  * */
@@ -181,7 +186,7 @@ function handlePriceAndTime(){
     }
 
 
-    if (time < 3000) NextRefreshTime = 50;
+    if (time < 10000) NextRefreshTime = 50;
 
     if(time < 1000){
         console.log(new Date().getTime() + ":" + `出价${price + 1}`);
@@ -215,7 +220,7 @@ async function buyByPage(price){
 		await page.click("#InitCartUrl");	
 	}
 	catch (e) {
-
+        console.log(e)
 	}
 }
 
@@ -225,13 +230,12 @@ async function buyByPage(price){
 async function buyByAPI(price){
     let para = Para.get_offer_price_para(Item_ID, price);
 
-    if (entryid === undefined || trackId === undefined || eid === undefined || cookie === undefined){
-        console.log("没有正确获取到entryid，trackId，eid，无法执行购买");
+    if (Entryid === undefined || Eid === undefined || Cookie === undefined){
+        console.log("没有正确获取到entryid, eid，无法执行购买");
     }else {
         let token = await page.evaluate(() => jab.getData());
-        para.entryid = entryid;
-        para.trackId = trackId;
-        para.eid = eid;
+        para.entryid = Entryid;
+        para.eid = Eid;
         para.token = token;
         requestOfferPrice(para);
     }
@@ -254,7 +258,7 @@ function requestOfferPrice(para) {
             "Content-Type": 'application/x-www-form-urlencoded',
             "Content-Length": Buffer.byteLength(postData),
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36",
-            "Cookie":cookie,
+            "Cookie":Cookie,
             "Referer": Item_URL,
             "Sec-Fetch-Mode": "cors"
         }

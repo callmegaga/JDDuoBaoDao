@@ -13,20 +13,20 @@
     "carlo": "^0.9.46",
     "core-js": "^3.6.5",
     "puppeteer-core": "^2.1.1",
-    "vue": "^2.6.11"
+    "vue": "^2.6.12"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.4.6",
-    "@vue/cli-plugin-eslint": "^4.4.6",
-    "@vue/cli-service": "^4.4.6",
+    "@vue/cli-plugin-babel": "^4.5.6",
+    "@vue/cli-plugin-eslint": "^4.5.6",
+    "@vue/cli-service": "^4.5.6",
     "babel-eslint": "^10.0.3",
     "babel-plugin-component": "^1.1.1",
-    "electron": "^8.3.4",
-    "electron-builder": "^22.7.0",
+    "electron": "^8.5.1",
+    "electron-builder": "^22.8.1",
     "element-ui": "^2.13.2",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.12"
   },
   "eslintConfig": {
     "root": true,
