@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
-import { Form, FormItem, Input, Button, Table, TableColumn, Row, Col} from 'element-ui';
+import {Form, FormItem, Input, Button, Table, TableColumn, Row, Col} from 'element-ui';
 
 Vue.config.productionTip = false;
 
@@ -14,5 +14,5 @@ Vue.use(Table);
 Vue.use(TableColumn);
 
 new Vue({
-  render: h => h(App),
+	render: h => h(App),
 }).$mount('#app');
