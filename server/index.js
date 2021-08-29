@@ -14,7 +14,7 @@ let MaxPrice;
 let NextRefreshTime = 2000;
 
 // 从发出请求，到请求成功的时间
-let RequestDelay = 100;
+// let RequestDelay = 100;
 
 let Item_URL;
 let OfferPricePara = null;
@@ -25,6 +25,8 @@ let EndTime;
 let CurrentTime;
 let Cookie = null;
 let BoomTimer;
+let OfferPriceTimer;
+let OfferPriceDelay = 100;
 
 
 /**
@@ -158,11 +160,11 @@ function getBatchInfo(callback) {
 }
 
 
-function BoomToOfferPrice() {
-	BoomTimer = setInterval(function () {
-		getBatchInfo(handlePriceAndTime);
-	}, 10);
-}
+// function BoomToOfferPrice() {
+// 	BoomTimer = setInterval(function () {
+// 		getBatchInfo(handlePriceAndTime);
+// 	}, 10);
+// }
 
 /**
  * 根据当前的出价和剩余时间做处理
@@ -180,6 +182,7 @@ function handlePriceAndTime() {
 	if (!OfferPricePara) {
 		console.log("正在获取加密参数");
 		buyByPage(1);
+		return;
 	}
 
 	if (price + 1 > MaxPrice) {
@@ -194,18 +197,27 @@ function handlePriceAndTime() {
 	}
 
 
-	if (time < 2000) {
-		if (BoomTimer === undefined) {
-			BoomToOfferPrice();
-		}
-	} else {
-		console.log(new Date().getTime() + ":" + `出价${price + 1}`);
-		buyByAPI(price + 1);
-	}
+	// if (time < 2000) {
+	// 	if (BoomTimer === undefined) {
+	// 		BoomToOfferPrice();
+	// 	}
+	// } else {
+	// 	console.log(new Date().getTime() + ":" + `出价${price + 1}`);
+	// 	buyByAPI(price + 1);
+	// }
+	//
+	// if (time < RequestDelay * 1.5) {
+	// 	console.log(new Date().getTime() + ":" + `出价${price + 1}`);
+	// 	buyByAPI(price + 1);
+	// }
 
-	if (time < RequestDelay * 1.5) {
-		console.log(new Date().getTime() + ":" + `出价${price + 1}`);
-		buyByAPI(price + 1);
+	if (time < 3000) {
+		if (OfferPriceTimer) clearTimeout(OfferPriceTimer);
+
+		OfferPriceTimer = setTimeout(function (){
+			console.log(`${time}毫秒后出价：${price}元`)
+			buyByAPI(MaxPrice);
+		}, time - OfferPriceDelay);
 	}
 
 	setTimeout(function () {
@@ -241,6 +253,7 @@ async function buyByAPI(price) {
 	} else {
 		OfferPricePara.price = price;
 
+		console.log(`出价：${price}元`)
 		return requestOfferPrice({
 			functionId: "paipai.auction.offerPrice",
 			body: OfferPricePara
