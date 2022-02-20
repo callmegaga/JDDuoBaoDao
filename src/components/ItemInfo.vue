@@ -11,7 +11,9 @@
 			<el-input v-model.number="form.price" placeholder="最高价格"></el-input>
 		</el-form-item>
 		<el-form-item>
-			<el-button type="primary" @click="searchItemInfo">查询历史价格</el-button>
+			<el-button type="primary" @click="initBrowser">启动浏览器</el-button>
+			<el-switch v-model="modeValue" active-text="自动加价" inactive-text="出最高价"></el-switch>
+			<el-button type="primary" @click="searchItemInfo">查询价格</el-button>
 			<el-button type="primary" @click="goToDid">开始抢购</el-button>
 		</el-form-item>
 	</el-form>
@@ -24,8 +26,9 @@ export default {
 		return {
 			form: {
 				id: undefined,
-				price: undefined
-			}
+				price: undefined,
+			},
+			modeValue: true,
 		}
 	},
 	methods: {
@@ -35,12 +38,15 @@ export default {
 		goToDid() {
 			this.$refs["form"].validate((valid) => {
 				if (valid) {
-					this.$emit("go-to-bid", this.form.id, this.form.price);
+					this.$emit("go-to-bid", this.form.id, this.form.price, this.modeValue);
 				} else {
 					return false;
 				}
 			});
 		},
+		initBrowser() {
+			this.$emit("init-browser")
+		}
 	},
 }
 </script>

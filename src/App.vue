@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<item-info @go-to-bid="goToBid" @search="search">
+		<item-info @init-browser="initBrowser" @go-to-bid="goToBid" @search="search">
 
 		</item-info>
 		<el-row>
@@ -38,11 +38,15 @@ export default {
 
 	},
 	methods: {
-		goToBid(id, price) {
-			window.startBid(id, price)
+		goToBid(id, price, modeValue) {
+			window.startBid(id, price, modeValue)
 		},
 		search(id) {
 			console.log(id)
+		},
+		initBrowser() {
+			console.log("启动浏览器，准备登录")
+			window.startInit()
 		},
 	}
 }

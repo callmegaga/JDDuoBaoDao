@@ -15,15 +15,18 @@
 <div id="app"></div>
 <!-- built files will be auto injected -->
 <script>
-	const goToBid = require("../server/index");
-
-	function startBid(id, price) {
-		goToBid(id, price)
+	const index = require("../server/index.js");
+	function startBid(id, price, modeValue) {
+		index.go(id, price, modeValue)
 	}
 
 	function search(id) {
 
 	}
+
+    function startInit() {
+        index.init()
+    }
 </script>
 </body>
 </html>
