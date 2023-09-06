@@ -22,7 +22,7 @@
 		"@vue/cli-service": "^4.5.13",
 		"babel-eslint": "^10.0.3",
 		"babel-plugin-component": "^1.1.1",
-		"electron": "^13.3.0",
+		"electron": "^22.3.21",
 		"electron-builder": "^22.11.7",
 		"element-ui": "^2.15.5",
 		"eslint": "^6.7.2",
